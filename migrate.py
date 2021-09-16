@@ -330,6 +330,8 @@ Copies given repository under any organization of source server on to any
 organization of destination server.
 """
 def copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo):
+    src_repo = get_repo(src_url, src_token, src_org, repo)
+    
     if get_org(src_url, src_token, src_org) == '':
         raise Exception('Organization [' + src_org + '] does not exist on ' + src_url) 
     if get_repo(src_url, src_token, src_org, repo) == '':
