@@ -218,13 +218,14 @@ Equivalent to:
        -d '{"name":"MyRepo"}' \
        http://gitea.mycompany.com/api/v1/org/MyOrg/repos
 """
-def create_repo(url, token, org, repo):
+def create_repo(url, token, org, repo, src_repo):
     print 'Repository will be created -> On Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
+    
     if get_org(url, token, org) == '':
         raise Exception('Organization [' + org + '] does not exist on ' + url) 
     if get_repo(url, token, org, repo) != '':
         raise Exception('Repository [' + repo + '] of organization [' + org + '] already exists on ' + url)
-    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, org, repo)['clone_url']}, token)
+    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': src_repo['clone_url']}, token)
     print 'Repository has been created -> On Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
 
 """
@@ -237,11 +238,11 @@ Equivalent to:
        -d '{"name":"MyUserRepo"}' \
        http://gitea.mycompany.com/api/v1/user/repos
 """
-def create_user_repo(url, token, user, repo):
+def create_user_repo(url, token, user, repo, src_repo):
     print 'User repository will be created -> On Git server: ' + url + ', Authenticated User, Repository: ' + repo
     if get_repo(url, token, user, repo) != '':
         raise Exception('Repository [' + repo + '] of user [' + user + '] already exists on ' + url)
-    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, user, repo)['clone_url']}, token)
+    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': src_repo['clone_url']}, token)
     print 'User repository has been created -> On Git server: ' + url + ', Authenticated User, Repository: ' + repo
 
 # """
@@ -294,7 +295,7 @@ def create_repos(src_url, src_token, dst_url, dst_token):
         repos = get_repos(src_url, src_token, orgName)
         for repo in repos:
             repoName = repo['name']
-            create_repo(dst_url, dst_token, orgName, repoName)
+            create_repo(dst_url, dst_token, orgName, repoName, repo)
 
 """
 Migrates repository of an owner(organizaton or user) on source server under to 
@@ -334,7 +335,7 @@ def copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo):
     if get_repo(src_url, src_token, src_org, repo) == '':
         raise Exception('Repository [' + repo + '] of organization [' + src_org + '] does not exist on ' + src_url)
 
-    create_repo(dst_url, dst_token, dst_org, repo)
+    create_repo(dst_url, dst_token, dst_org, repo, src_repo)
     #migrate_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
 
 """
@@ -371,8 +372,8 @@ def copy_user_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, r
     if src_repo['private']:
         print 'User repository [' + repo + '] is private. It will not be copied. Please make it public and retry.'
     else:        
-        create_user_repo(dst_url, dst_token, dst_user, repo)
-        migrate_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, repo)
+        create_user_repo(dst_url, dst_token, dst_user, repo, src_repo)
+        #migrate_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, repo)
 
 """
 Copies all the public repositories of given user on source server 
