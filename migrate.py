@@ -244,43 +244,43 @@ def create_user_repo(url, token, user, repo):
     post(get_api_url(url) + '/user/repos', {'name': repo}, token)
     print 'User repository has been created -> On Git server: ' + url + ', Authenticated User, Repository: ' + repo
 
-"""
-Equivalent to:
-    curl -v -X DELETE \
-       -H "Content-Type: application/json" \
-       -H "Authorization: token <token>" \
-       http://gitea.mycompany.com/api/v1/repos/MyOrg/MyRepo 
-"""
-def delete_repo(url, token, org, repo):
-    print 'Repository will be deleted -> From Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
-    if get_org(url, token, org) == '':
-        raise Exception('Organization [' + org + '] does not exist on ' + url) 
-    if get_repo(url, token, org, repo) == '':
-        print 'Repository [' + repo + '] of organization [' + org + '] does not exist on ' + url
-    else:
-        delete(get_api_url(url) + '/repos/' + org + '/' + repo, token)
-        print 'Repository has been deleted -> From Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
+# """
+# Equivalent to:
+#     curl -v -X DELETE \
+#        -H "Content-Type: application/json" \
+#        -H "Authorization: token <token>" \
+#        http://gitea.mycompany.com/api/v1/repos/MyOrg/MyRepo 
+# """
+# def delete_repo(url, token, org, repo):
+#     print 'Repository will be deleted -> From Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
+#     if get_org(url, token, org) == '':
+#         raise Exception('Organization [' + org + '] does not exist on ' + url) 
+#     if get_repo(url, token, org, repo) == '':
+#         print 'Repository [' + repo + '] of organization [' + org + '] does not exist on ' + url
+#     else:
+#         delete(get_api_url(url) + '/repos/' + org + '/' + repo, token)
+#         print 'Repository has been deleted -> From Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
 
-"""
-Deletes all repositories of given organization.
-"""
-def delete_repos(url, token, org):
-    repos = get_repos(url, token, org)
-    for repo in repos:
-        repoName = repo['name']
-        delete_repo(url, token, org, repoName)
+# """
+# Deletes all repositories of given organization.
+# """
+# def delete_repos(url, token, org):
+#     repos = get_repos(url, token, org)
+#     for repo in repos:
+#         repoName = repo['name']
+#         delete_repo(url, token, org, repoName)
 
-"""
-Deletes all repositories of each organization.
-"""
-def delete_repos(url, token):
-    orgs = get_orgs(url, token)
-    for org in orgs:
-        orgName = org['username']
-        repos = get_repos(url, token, orgName)
-        for repo in repos:
-            repoName = repo['name']
-            delete_repo(url, token, orgName, repoName)
+# """
+# Deletes all repositories of each organization.
+# """
+# def delete_repos(url, token):
+#     orgs = get_orgs(url, token)
+#     for org in orgs:
+#         orgName = org['username']
+#         repos = get_repos(url, token, orgName)
+#         for repo in repos:
+#             repoName = repo['name']
+#             delete_repo(url, token, orgName, repoName)
 
 """
 Creates organization repositories of source server under the same organization 
