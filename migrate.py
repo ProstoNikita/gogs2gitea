@@ -273,7 +273,8 @@ def create_repo(url, token, org, repo, src_repo, src_token):
         'repo_name': repo,
         'clone_addr': src_repo['clone_url'],
         'mirror': True,
-        'auth_token': src_token
+        'auth_token': src_token,
+        "service": "gogs"
     },
         token)
     print 'Repository has been created -> On Git server: ' + \
@@ -305,7 +306,8 @@ def create_user_repo(url, token, user, repo, src_repo, src_token):
         'repo_name': repo,
         'clone_addr': src_repo['clone_url'],
         'mirror': True,
-        'auth_token': src_repo
+        'auth_token': src_repo,
+        "service": "gogs"
     }, token)
     print 'User repository has been created -> On Git server: ' + \
         url + ', Authenticated User, Repository: ' + repo
