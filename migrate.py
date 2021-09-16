@@ -224,7 +224,7 @@ def create_repo(url, token, org, repo):
         raise Exception('Organization [' + org + '] does not exist on ' + url) 
     if get_repo(url, token, org, repo) != '':
         raise Exception('Repository [' + repo + '] of organization [' + org + '] already exists on ' + url)
-    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, org, repo)["clone_url"]}, token)
+    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, org, repo)['clone_url']}, token)
     print 'Repository has been created -> On Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
 
 """
