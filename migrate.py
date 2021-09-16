@@ -56,12 +56,12 @@ def post(url, params, token):
     request.add_header("Authorization", 'token ' + token)
     return urllib2.urlopen(request)
 
-def delete(url, token):
-    request = urllib2.Request(url)
-    request.add_header("Content-Type",'application/json')
-    request.add_header("Authorization", 'token ' + token)
-    request.get_method = lambda: 'DELETE'
-    return urllib2.urlopen(request)
+# def delete(url, token):
+#     request = urllib2.Request(url)
+#     request.add_header("Content-Type",'application/json')
+#     request.add_header("Authorization", 'token ' + token)
+#     request.get_method = lambda: 'DELETE'
+#     return urllib2.urlopen(request)
 
 # http://gogs.mycompany.com -> http://gogs.mycompany.com/api/v1
 def get_api_url(url):
@@ -224,7 +224,7 @@ def create_repo(url, token, org, repo):
         raise Exception('Organization [' + org + '] does not exist on ' + url) 
     if get_repo(url, token, org, repo) != '':
         raise Exception('Repository [' + repo + '] of organization [' + org + '] already exists on ' + url)
-    post(get_api_url(url) + '/org/' + org + '/repos', {'name': repo}, token)
+    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, org, repo)["clone_url"]}, token)
     print 'Repository has been created -> On Git server: ' + url + ', Organization: ' + org + ', Repository: ' + repo
 
 """
@@ -335,7 +335,7 @@ def copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo):
         raise Exception('Repository [' + repo + '] of organization [' + src_org + '] does not exist on ' + src_url)
 
     create_repo(dst_url, dst_token, dst_org, repo)
-    migrate_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
+    #migrate_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
 
 """
 Copies all the repositories of each organization on source server 
