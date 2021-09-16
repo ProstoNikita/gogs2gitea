@@ -396,11 +396,12 @@ def copy_user_repos(src_url, src_token, src_user, dst_url, dst_token, dst_user):
 Copies all the repositories of given organization on source server 
 to the given organization of destination server.
 """
-def copy_repos(src_url, src_token, src_org, dst_url, dst_token, dst_org):
-    repos = get_repos(src_url, src_token, src_org)
-    for repo in repos:
-        repoName = repo['name']
-        copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repoName) 
+# Commented because of lack of overloading in Python
+# def copy_repos(src_url, src_token, src_org, dst_url, dst_token, dst_org):
+#     repos = get_repos(src_url, src_token, src_org)
+#     for repo in repos:
+#         repoName = repo['name']
+#         copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repoName) 
 
 def print_repos(repos):
     for repo in repos:
