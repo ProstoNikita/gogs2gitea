@@ -344,15 +344,15 @@ under to the same organizations of destination server.
 All the organizations of source server must exist on destination 
 server. copy_orgs() can be used for this.
 """
-## Commented because of lack of overloading in Python
-# def copy_repos(src_url, src_token, dst_url, dst_token):
-#     orgs = get_orgs(src_url, src_token)
-#     for org in orgs:
-#         orgName = org['username']
-#         repos = get_repos(src_url, src_token, orgName)
-#         for repo in repos:
-#             repoName = repo['name']
-#             copy_repo(src_url, src_token, orgName, dst_url, dst_token, orgName, repoName)
+
+def copy_repos(src_url, src_token, dst_url, dst_token):
+    orgs = get_orgs(src_url, src_token)
+    for org in orgs:
+        orgName = org['username']
+        repos = get_repos(src_url, src_token, orgName)
+        for repo in repos:
+            repoName = repo['name']
+            copy_repo(src_url, src_token, orgName, dst_url, dst_token, orgName, repoName)
 
 """
 Copies given public repository of a user on source server under to user having 
