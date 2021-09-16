@@ -258,7 +258,7 @@ Equivalent to:
 """
 
 
-def create_repo(url, token, org, repo, src_repo, dst_token):
+def create_repo(url, token, org, repo, src_repo, src_token):
     print 'Repository will be created -> On Git server: ' + \
         url + ', Organization: ' + org + ', Repository: ' + repo
 
@@ -273,7 +273,7 @@ def create_repo(url, token, org, repo, src_repo, dst_token):
         'repo_name': repo,
         'clone_addr': src_repo['clone_url'],
         'mirror': True,
-        'auth_token': dst_token
+        'auth_token': src_token
     },
         token)
     print 'Repository has been created -> On Git server: ' + \
@@ -292,14 +292,21 @@ Equivalent to:
 """
 
 
-def create_user_repo(url, token, user, repo, src_repo, dst_token):
+def create_user_repo(url, token, user, repo, src_repo, src_token):
     print 'User repository will be created -> On Git server: ' + \
         url + ', Authenticated User, Repository: ' + repo
+
     if get_repo(url, token, user, repo) != '':
         raise Exception(
             'Repository [' + repo + '] of user [' + user + '] already exists on ' + url)
+
     post(get_api_url(url) + '/repos/migrate',
-         {'repo_name': repo, 'clone_addr': src_repo['clone_url']}, token)
+         {
+        'repo_name': repo,
+        'clone_addr': src_repo['clone_url'],
+        'mirror': True,
+        'auth_token': src_repo
+    }, token)
     print 'User repository has been created -> On Git server: ' + \
         url + ', Authenticated User, Repository: ' + repo
 
@@ -356,7 +363,7 @@ def create_repos(src_url, src_token, dst_url, dst_token):
         repos = get_repos(src_url, src_token, orgName)
         for repo in repos:
             repoName = repo['name']
-            create_repo(dst_url, dst_token, orgName, repoName, repo, dst_token)
+            create_repo(dst_url, dst_token, orgName, repoName, repo, src_token)
 
 
 """
@@ -414,7 +421,7 @@ def copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo):
         raise Exception(
             'Repository [' + repo + '] of organization [' + src_org + '] does not exist on ' + src_url)
 
-    create_repo(dst_url, dst_token, dst_org, repo, src_repo, dst_token)
+    create_repo(dst_url, dst_token, dst_org, repo, src_repo, src_token)
     #migrate_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
 
 
@@ -460,7 +467,7 @@ def copy_user_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, r
             '] is private. It will not be copied. Please make it public and retry.'
     else:
         create_user_repo(dst_url, dst_token, dst_user,
-                         repo, src_repo, dst_token)
+                         repo, src_repo, src_token)
         #migrate_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, repo)
 
 
