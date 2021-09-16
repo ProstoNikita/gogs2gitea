@@ -241,7 +241,7 @@ def create_user_repo(url, token, user, repo):
     print 'User repository will be created -> On Git server: ' + url + ', Authenticated User, Repository: ' + repo
     if get_repo(url, token, user, repo) != '':
         raise Exception('Repository [' + repo + '] of user [' + user + '] already exists on ' + url)
-    post(get_api_url(url) + '/user/repos', {'name': repo}, token)
+    post(get_api_url(url) + '/repos/migrate', {'repo_name': repo, 'clone_addr': get_repo(url, token, user, repo)["clone_url"]}, token)
     print 'User repository has been created -> On Git server: ' + url + ', Authenticated User, Repository: ' + repo
 
 # """
