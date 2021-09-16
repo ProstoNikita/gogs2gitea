@@ -258,7 +258,7 @@ Equivalent to:
 """
 
 
-def create_repo(url, token, org, repo, src_repo, src_token):
+def create_repo(url, token, org, repo, src_repo, src_token, src_org):
     print 'Repository will be created -> On Git server: ' + \
         url + ', Organization: ' + org + ', Repository: ' + repo
 
@@ -274,7 +274,8 @@ def create_repo(url, token, org, repo, src_repo, src_token):
         'clone_addr': src_repo['clone_url'],
         'mirror': True,
         'auth_token': src_token,
-        "service": "gogs"
+        "service": "gogs",
+        "repo_owner": src_org
     },
         token)
     print 'Repository has been created -> On Git server: ' + \
@@ -352,23 +353,6 @@ def create_user_repo(url, token, user, repo, src_repo, src_token):
 
 
 """
-Creates organization repositories of source server under the same organization 
-of destination server. It does not copy the content of the repositories(See 
-copy_repos()) 
-"""
-
-
-def create_repos(src_url, src_token, dst_url, dst_token):
-    orgs = get_orgs(src_url, src_token)
-    for org in orgs:
-        orgName = org['username']
-        repos = get_repos(src_url, src_token, orgName)
-        for repo in repos:
-            repoName = repo['name']
-            create_repo(dst_url, dst_token, orgName, repoName, repo, src_token)
-
-
-"""
 Migrates repository of an owner(organizaton or user) on source server under to 
 an owner on destination server.
 
@@ -380,7 +364,7 @@ Equivalent to:
 """
 
 
-def migrate_repo(src_url, src_token, src_owner, dst_url, dst_token, dst_owner, repo):
+def legacy_migrate_repo(src_url, src_token, src_owner, dst_url, dst_token, dst_owner, repo):
     print 'Repository migration has been started -> From:' + src_url + ', To: ' + dst_url + \
         ', Source owner: ' + src_owner + ', Destination owner: ' + \
         dst_owner + ', Repository: ' + repo
@@ -423,8 +407,8 @@ def copy_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo):
         raise Exception(
             'Repository [' + repo + '] of organization [' + src_org + '] does not exist on ' + src_url)
 
-    create_repo(dst_url, dst_token, dst_org, repo, src_repo, src_token)
-    #migrate_repo(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
+    create_repo(dst_url, dst_token, dst_org, repo, src_repo, src_token, src_org)
+    #(src_url, src_token, src_org, dst_url, dst_token, dst_org, repo)
 
 
 """
@@ -470,7 +454,7 @@ def copy_user_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, r
     else:
         create_user_repo(dst_url, dst_token, dst_user,
                          repo, src_repo, src_token)
-        #migrate_repo(src_url, src_token, src_user, dst_url, dst_token, dst_user, repo)
+        #(src_url, src_token, src_user, dst_url, dst_token, dst_user, repo)
 
 
 """
